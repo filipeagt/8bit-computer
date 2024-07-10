@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>8-bit Breadboard Computer</title>
+    <link rel="stylesheet" href="css/style.css">
+
+</head>
+<body>
+    <header>
+        <h1>8-bit Breadboard Computer</h1>
+        <p>Simulador de saída</p>
+    </header>
+    <nav>
+        <a href="index.html">Início</a>
+        <a href="https://github.com/filipeagt/assembler8Bit" target="_blank">Assembler</a>
+        <a href="https://github.com/filipeagt/assembler8Bit/tree/main/codes" target="_blank">Exemplos</a>
+        <a href="video.html">Vídeos</a>
+        <a href="foto.html">Fotos</a>
+    </nav>
+    <main>
+        <section id="memory">
+            <label for="memory">
+                <h2>Memória</h2>
+            </label>
+            
+            <textarea name="memory" id="memory" cols="12" rows="16" placeholder="Insira o código objeto para simular o funcionamento do computador de 8 bits."></textarea>
+            <button onclick="run()">Executar</button>
+        </section>
+        <section id="leds">
+            <h2>Registrador de Sáida</h2>
+            <span id="l7"></span>
+            <span id="l6"></span>
+            <span id="l5"></span>
+            <span id="l4"></span>
+            <span id="l3"></span>
+            <span id="l2"></span>
+            <span id="l1"></span>
+            <span id="l0"></span>
+        </section>
+        <section id="display">
+            <p>255</p>
+        </section>
+    </main>
+    <footer><p>Desenvolvido por <a href="https://github.com/filipeagt">Filipe Almeida</a></p></footer>
+
+    <style src="js/script.js"></style>
+</body>
+</html>

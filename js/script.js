@@ -93,10 +93,10 @@ function run() {
     let nibbleH = '0000'
     let nibbleL = '0000'
 
-    for(let pos=0, loop=0; pos < linhas.length || loop < 10 ; pos++) {
+    for(let pos=0, loop=0; pos < linhas.length && loop < 200 ; pos++, loop++) {
         opcode = linhas[pos].split(' ')[1]
         operando = linhas[pos].split(' ')[2]
-
+        //alert(pos)
         
         switch(opcode) {
             case '0000'://LDA
@@ -148,6 +148,7 @@ function run() {
                 break
             case '1011'://JMP
                 pos = decimal(operando)-1
+                
                 break
             case '1100'://JIC
                 
@@ -160,11 +161,11 @@ function run() {
                 break
             case '1111'://OUT  
                 
-                setTimeout(mudaTexto, loop*1000, acc)
-                setTimeout(acendeLeds, loop*1000, nibbleL,nibbleH)      
+                setTimeout(mudaTexto, loop*250, acc)
+                setTimeout(acendeLeds, loop*250, nibbleL,nibbleH)      
                     
                 
-                loop++ 
+                 
                   
                 break
         }

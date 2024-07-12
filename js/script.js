@@ -92,11 +92,12 @@ function run() {
     let operando = '0000'
     let nibbleH = '0000'
     let nibbleL = '0000'
-
+    
     for(let pos=0, loop=0; pos < linhas.length && loop < 200 ; pos++, loop++) {
         opcode = linhas[pos].split(' ')[1]
         operando = linhas[pos].split(' ')[2]
-        //alert(pos)
+        
+        //alert(x.toString(16).toUpperCase())
         
         switch(opcode) {
             case '0000'://LDA
@@ -110,7 +111,8 @@ function run() {
                 acc = decimal(operando)
                 break
             case '0010'://STA
-                
+                linhas[decimal(operando)] = `${decimal(operando).toString(16).toUpperCase()} ${nibbleH} ${nibbleL}`
+                memoria.value = linhas.toString().replaceAll(',','\n')
                 break
             case '0011'://ADD
                 nibbleH = linhas[decimal(operando)].split(' ')[1]

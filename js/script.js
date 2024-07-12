@@ -25,6 +25,10 @@ function decimal(binario,binarioH='0000') {
     return res
 }
 
+function mudaTexto(str) {
+    out.innerText = str
+}
+
 function liga(led) {
     led.style.backgroundColor = 'yellow'
     led.style.opacity = '100%'
@@ -89,7 +93,7 @@ function run() {
     let nibbleH = '0000'
     let nibbleL = '0000'
 
-    for(let pos=0, loop=0; pos < linhas.length || loop < 100 ; pos++, loop++) {
+    for(let pos=0, loop=0; pos < linhas.length || loop < 10 ; pos++) {
         opcode = linhas[pos].split(' ')[1]
         operando = linhas[pos].split(' ')[2]
 
@@ -109,10 +113,16 @@ function run() {
                 
                 break
             case '0011'://ADD
-                
+                nibbleH = linhas[decimal(operando)].split(' ')[1]
+                nibbleL = linhas[decimal(operando)].split(' ')[2]
+                acc += decimal(nibbleL,nibbleH)
+                if(acc>255) acc -= 256
                 break
             case '0100'://SUB
-                
+                nibbleH = linhas[decimal(operando)].split(' ')[1]
+                nibbleL = linhas[decimal(operando)].split(' ')[2]
+                acc -= decimal(nibbleL,nibbleH)
+                if(acc<0) acc += 256
                 break
             case '0101'://AND
                 
@@ -127,10 +137,14 @@ function run() {
                 
                 break
             case '1001'://SHL
-                
+                nibbleH = nibbleH.slice(1,4) + nibbleL.slice(0,1)
+                nibbleL = nibbleL.slice(1,4)+'0'
+                acc *= 2
                 break
             case '1010'://SHR
-                
+                nibbleH = '0'+ nibbleH.slice(0,3)                
+                nibbleL = nibbleH.slice(3,4) + nibbleL.slice(0,3)
+                acc = Math.trunc(acc/2)
                 break
             case '1011'://JMP
                 pos = decimal(operando)-1
@@ -146,10 +160,12 @@ function run() {
                 break
             case '1111'://OUT  
                 
-                    out.innerText = acc
-                    acendeLeds(nibbleL,nibbleH)
+                setTimeout(mudaTexto, loop*1000, acc)
+                setTimeout(acendeLeds, loop*1000, nibbleL,nibbleH)      
                     
-                           
+                
+                loop++ 
+                  
                 break
         }
 
@@ -161,6 +177,18 @@ function run() {
 }
 
 
-
+function teste() {
+    for(j=0;j<=100;j++){
+        if(j%2==0) {
+            setTimeout(liga, j*500, led0)
+            setTimeout(mudaTexto, j*500, '1')
+            
+        } else {
+            setTimeout(desliga, j*500, led0)
+            setTimeout(mudaTexto, j*500, '0')
+            
+        }    
+    }
+}
 
 

@@ -127,26 +127,39 @@ function run() {
                 if(acc<0) acc += 256
                 break
             case '0101'://AND
-                
+                nibbleH = linhas[decimal(operando)].split(' ')[1]
+                nibbleL = linhas[decimal(operando)].split(' ')[2]
+                acc &= decimal(nibbleL,nibbleH)
                 break
             case '0110'://OR
-                
+                nibbleH = linhas[decimal(operando)].split(' ')[1]
+                nibbleL = linhas[decimal(operando)].split(' ')[2]
+                acc |= decimal(nibbleL,nibbleH)
                 break
             case '0111'://XOR
-                
+                nibbleH = linhas[decimal(operando)].split(' ')[1]
+                nibbleL = linhas[decimal(operando)].split(' ')[2]
+                acc ^= decimal(nibbleL,nibbleH)
                 break
             case '1000'://NOT
-                
+                nibbleH = nibbleH.replaceAll('0','x').replaceAll('1','0').replaceAll('x','1')
+                nibbleL = nibbleL.replaceAll('0','x').replaceAll('1','0').replaceAll('x','1')
+                acc = ~acc
+                if(acc<0) acc += 256
                 break
             case '1001'://SHL
                 nibbleH = nibbleH.slice(1,4) + nibbleL.slice(0,1)
                 nibbleL = nibbleL.slice(1,4)+'0'
-                acc *= 2
+                //acc *= 2
+                acc <<= 1
+                if(acc>255) acc -= 256
+
                 break
             case '1010'://SHR
                 nibbleH = '0'+ nibbleH.slice(0,3)                
                 nibbleL = nibbleH.slice(3,4) + nibbleL.slice(0,3)
-                acc = Math.trunc(acc/2)
+                //acc = Math.trunc(acc/2)
+                acc >>= 1
                 break
             case '1011'://JMP
                 pos = decimal(operando)-1
@@ -164,11 +177,8 @@ function run() {
             case '1111'://OUT  
                 
                 setTimeout(mudaTexto, loop*250, acc)
-                setTimeout(acendeLeds, loop*250, nibbleL,nibbleH)      
-                    
-                
-                 
-                  
+                setTimeout(acendeLeds, loop*250, nibbleL,nibbleH) 
+                      
                 break
         }
 

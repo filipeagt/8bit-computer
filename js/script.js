@@ -1,4 +1,7 @@
 var acc = 0
+var carry = false
+var minus = false
+var zero = true
 var out = document.getElementById('saida')
 var led7 = document.getElementById('l7')
 var led6 = document.getElementById('l6')
@@ -92,6 +95,7 @@ function run() {
     let operando = '0000'
     let nibbleH = '0000'
     let nibbleL = '0000'
+    let byte = '00000000'
     
     for(let pos=0, loop=0; pos < linhas.length && loop < 200 ; pos++, loop++) {
         opcode = linhas[pos].split(' ')[1]
@@ -117,62 +121,157 @@ function run() {
             case '0011'://ADD
                 nibbleH = linhas[decimal(operando)].split(' ')[1]
                 nibbleL = linhas[decimal(operando)].split(' ')[2]
-                acc += decimal(nibbleL,nibbleH)
-                if(acc>255) acc -= 256
+                acc += decimal(nibbleL,nibbleH)                
+                
+                if(acc>255) {
+                    acc -= 256
+                    carry = true
+                } else {
+                    carry = false
+                }
+                if(acc > 127) {
+                    minus = true
+                } else {
+                    minus = false
+                }
+                if(acc == 0) zero = true
+                else zero = false
+
+                byte = ('0000000'+acc.toString(2)).slice(-8)
+                nibbleH = byte.slice(0,4)
+                nibbleL = byte.slice(4,8)
+
                 break
             case '0100'://SUB
                 nibbleH = linhas[decimal(operando)].split(' ')[1]
                 nibbleL = linhas[decimal(operando)].split(' ')[2]
+
+                if(decimal(nibbleL,nibbleH) > acc) carry = false
+                else carry = true
+
                 acc -= decimal(nibbleL,nibbleH)
+                
                 if(acc<0) acc += 256
+
+                if(acc > 127) {
+                    minus = true
+                } else {
+                    minus = false
+                }
+                if(acc == 0) zero = true
+                else zero = false
+
+                byte = ('0000000'+acc.toString(2)).slice(-8)
+                nibbleH = byte.slice(0,4)
+                nibbleL = byte.slice(4,8)
+
                 break
             case '0101'://AND
                 nibbleH = linhas[decimal(operando)].split(' ')[1]
                 nibbleL = linhas[decimal(operando)].split(' ')[2]
                 acc &= decimal(nibbleL,nibbleH)
+                byte = ('0000000'+acc.toString(2)).slice(-8)
+                nibbleH = byte.slice(0,4)
+                nibbleL = byte.slice(4,8)
+
+                if(acc > 127) {
+                    minus = true
+                } else {
+                    minus = false
+                }
+                if(acc == 0) zero = true
+                else zero = false
                 break
             case '0110'://OR
                 nibbleH = linhas[decimal(operando)].split(' ')[1]
                 nibbleL = linhas[decimal(operando)].split(' ')[2]
                 acc |= decimal(nibbleL,nibbleH)
+                byte = ('0000000'+acc.toString(2)).slice(-8)
+                nibbleH = byte.slice(0,4)
+                nibbleL = byte.slice(4,8)
+
+                if(acc > 127) {
+                    minus = true
+                } else {
+                    minus = false
+                }
+                if(acc == 0) zero = true
+                else zero = false
                 break
             case '0111'://XOR
                 nibbleH = linhas[decimal(operando)].split(' ')[1]
                 nibbleL = linhas[decimal(operando)].split(' ')[2]
                 acc ^= decimal(nibbleL,nibbleH)
+                byte = ('0000000'+acc.toString(2)).slice(-8)
+                nibbleH = byte.slice(0,4)
+                nibbleL = byte.slice(4,8)
+
+                if(acc > 127) {
+                    minus = true
+                } else {
+                    minus = false
+                }
+                if(acc == 0) zero = true
+                else zero = false
                 break
             case '1000'://NOT
                 nibbleH = nibbleH.replaceAll('0','x').replaceAll('1','0').replaceAll('x','1')
                 nibbleL = nibbleL.replaceAll('0','x').replaceAll('1','0').replaceAll('x','1')
                 acc = ~acc
                 if(acc<0) acc += 256
+
+                if(acc > 127) {
+                    minus = true
+                } else {
+                    minus = false
+                }
+                if(acc == 0) zero = true
+                else zero = false
                 break
             case '1001'://SHL
-                nibbleH = nibbleH.slice(1,4) + nibbleL.slice(0,1)
-                nibbleL = nibbleL.slice(1,4)+'0'
-                //acc *= 2
                 acc <<= 1
                 if(acc>255) acc -= 256
 
+                byte = ('0000000'+acc.toString(2)).slice(-8)
+                nibbleH = byte.slice(0,4)
+                nibbleL = byte.slice(4,8)
+
+                if(acc > 127) {
+                    minus = true
+                } else {
+                    minus = false
+                }
+                if(acc == 0) zero = true
+                else zero = false
+
                 break
-            case '1010'://SHR
-                nibbleH = '0'+ nibbleH.slice(0,3)                
-                nibbleL = nibbleH.slice(3,4) + nibbleL.slice(0,3)
-                //acc = Math.trunc(acc/2)
+            case '1010'://SHR                
                 acc >>= 1
+
+                byte = ('0000000'+acc.toString(2)).slice(-8)
+                nibbleH = byte.slice(0,4)
+                nibbleL = byte.slice(4,8)
+
+                if(acc > 127) {
+                    minus = true
+                } else {
+                    minus = false
+                }
+                if(acc == 0) zero = true
+                else zero = false
                 break
             case '1011'://JMP
                 pos = decimal(operando)-1
                 
                 break
             case '1100'://JIC
-                
+                if(carry) pos = decimal(operando)-1
                 break
             case '1101'://JIM
-                
+                if(minus) pos = decimal(operando)-1
                 break
             case '1110'://JNZ
-                
+                if(!zero) pos = decimal(operando)-1
                 break
             case '1111'://OUT  
                 

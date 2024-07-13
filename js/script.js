@@ -12,7 +12,6 @@ var led2 = document.getElementById('l2')
 var led1 = document.getElementById('l1')
 var led0 = document.getElementById('l0')
 
-
 function decimal(binario,binarioH='0000') {
     let res = 0
     res += Number(binarioH[0])*128
@@ -22,9 +21,8 @@ function decimal(binario,binarioH='0000') {
     res += Number(binario[0])*8
     res += Number(binario[1])*4
     res += Number(binario[2])*2
-    res += Number(binario[3])*1
+    res += Number(binario[3])*1    
     
-    //alert(res)
     return res
 }
 
@@ -87,7 +85,6 @@ function acendeLeds(binario,binarioH='0000') {
     
 }
 
-
 function run() {
     let memoria = document.getElementById('memory')
     let linhas = memoria.value.split('\n')
@@ -97,12 +94,10 @@ function run() {
     let nibbleL = '0000'
     let byte = '00000000'
     
-    for(let pos=0, loop=0; pos < linhas.length && loop < 200 ; pos++, loop++) {
-        opcode = linhas[pos].split(' ')[1]
-        operando = linhas[pos].split(' ')[2]
-        
-        //alert(x.toString(16).toUpperCase())
-        
+    for(let progCount=0, nInstruct=0; progCount < linhas.length && nInstruct < 1000 ; progCount++, nInstruct++) {
+        opcode = linhas[progCount].split(' ')[1]
+        operando = linhas[progCount].split(' ')[2]        
+                
         switch(opcode) {
             case '0000'://LDA
                 nibbleH = linhas[decimal(operando)].split(' ')[1]
@@ -261,46 +256,28 @@ function run() {
                 else zero = false
                 break
             case '1011'://JMP
-                pos = decimal(operando)-1
+                progCount = decimal(operando)-1
                 
                 break
             case '1100'://JIC
-                if(carry) pos = decimal(operando)-1
+                if(carry) progCount = decimal(operando)-1
                 break
             case '1101'://JIM
-                if(minus) pos = decimal(operando)-1
+                if(minus) progCount = decimal(operando)-1
                 break
             case '1110'://JNZ
-                if(!zero) pos = decimal(operando)-1
+                if(!zero) progCount = decimal(operando)-1
                 break
             case '1111'://OUT  
                 
-                setTimeout(mudaTexto, loop*250, acc)
-                setTimeout(acendeLeds, loop*250, nibbleL,nibbleH) 
+                setTimeout(mudaTexto, nInstruct*250, acc)
+                setTimeout(acendeLeds, nInstruct*250, nibbleL,nibbleH) 
                       
                 break
         }
-
-        //alert(loop)
-        
-    }
+                
+    }    
     
-    
-}
-
-
-function teste() {
-    for(j=0;j<=100;j++){
-        if(j%2==0) {
-            setTimeout(liga, j*500, led0)
-            setTimeout(mudaTexto, j*500, '1')
-            
-        } else {
-            setTimeout(desliga, j*500, led0)
-            setTimeout(mudaTexto, j*500, '0')
-            
-        }    
-    }
 }
 
 

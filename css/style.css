@@ -87,8 +87,10 @@ main h2 {
 #video > iframe {
     display: block;
     margin: auto;
+    margin-top: 20px;
     max-width: 90vw;
     border-radius: 5px;
+    box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.247);
 }
 
 #memory {

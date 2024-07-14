@@ -11,6 +11,7 @@ var led3 = document.getElementById('l3')
 var led2 = document.getElementById('l2')
 var led1 = document.getElementById('l1')
 var led0 = document.getElementById('l0')
+const maxInst = 1000    //Máximo de instruções a serem executadas em um loop "infinito"
 
 function decimal(binario,binarioH='0000') {
     let res = 0
@@ -94,7 +95,10 @@ function run() {
     let nibbleL = '0000'
     let byte = '00000000'
     
-    for(let progCount=0, nInstruct=0; progCount < linhas.length && nInstruct < 1000 ; progCount++, nInstruct++) {
+    for(let progCount=0, nInstruct=0; nInstruct < maxInst ; progCount++, nInstruct++) {
+        
+        if(progCount > 15) progCount = 0 
+
         opcode = linhas[progCount].split(' ')[1]
         operando = linhas[progCount].split(' ')[2]        
                 
@@ -275,7 +279,7 @@ function run() {
                       
                 break
         }
-                
+               
     }    
     
 }
